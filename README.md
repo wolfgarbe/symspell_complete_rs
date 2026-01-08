@@ -1,7 +1,7 @@
 SymSpellComplete<br>
 [![Crates.io](https://img.shields.io/crates/v/symspell_complete_rs.svg)](https://crates.io/crates/symspell_complete_rs)
 [![Downloads](https://img.shields.io/crates/d/symspell_complete_rs.svg?style=flat-square)](https://crates.io/crates/symspell_complete_rs)
-[![MIT License](https://img.shields.io/github/license/wolfgarbe/symspell_complete_rs.svg)](https://github.com/wolfgarbe/symspell_complete_rs/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/github/license/wolfgarbe/symspell_complete_rs.svg)](https://github.com/wolfgarbe/symspell_complete_rs/blob/main/LICENSE)
 [![Documentation](https://docs.rs/symspell_complete_rs/badge.svg)](https://docs.rs/symspell_complete_rs)
 ========
 
