@@ -48,7 +48,7 @@ pub type FastVec<T> = SmallVec<[T; VEC_SIZE]>;
 /// E.g., "CA" to "ABC" has an edit distance of 2 by for Damerau-Levenshtein, but a distance of 3 when using the optimal string alignment algorithm.
 /// Returns the edit distance, >= 0 representing the number of edits required to transform one string to the other,
 /// or -1 if the distance is greater than the specified max_distance.
-/// https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance#Optimal_string_alignment_distance
+/// <https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance#Optimal_string_alignment_distance>
 pub fn damerau_levenshtein_osa(a: &str, b: &str, max_distance: usize) -> Option<usize> {
     let b_len = b.chars().count();
 
@@ -345,8 +345,8 @@ impl SymSpell {
     /// * `max_dictionary_edit_distance` - Maximum edit distance for dictionary precalculation.
     /// * `term_length_threshold` - Term length thresholds for each edit distance.
     ///   None: max_dictionary_edit_distance for all terms lengths
-    ///   Some([4].into()): max_dictionary_edit_distance for all terms lengths >= 4,
-    ///   Some([2,8].into()): max_dictionary_edit_distance for all terms lengths >=2, max_dictionary_edit_distance +1 for all terms for lengths>=8
+    ///   Some(\[4\].into()): max_dictionary_edit_distance for all terms lengths >= 4,
+    ///   Some(\[2,8\].into()): max_dictionary_edit_distance for all terms lengths >=2, max_dictionary_edit_distance +1 for all terms for lengths>=8
     ///   ⚠️ The resulting maximum edit distance defined in lookup() for each term length (max_edit_distance + term_length_threshold) must be
     ///   <= the corresponding maximum edit distance defined for each term length in SymSpell::new() used for creation of dictionary structures.
     /// * `prefix_length` - The length of word prefixes, from which deletes are generated. (5..7).
@@ -523,8 +523,8 @@ impl SymSpell {
     /// * `max_edit_distance` - The maximum edit distance between input and suggested words.
     /// * `term_length_threshold` - Term length thresholds for each edit distance.
     ///   None: max_dictionary_edit_distance for all terms lengths
-    ///   Some([4].into()): max_dictionary_edit_distance for all terms lengths >= 4,
-    ///   Some([2,8].into()): max_dictionary_edit_distance for all terms lengths >=2, max_dictionary_edit_distance +1 for all terms for lengths>=8
+    ///   Some(\[4\].into()): max_dictionary_edit_distance for all terms lengths >= 4,
+    ///   Some(\[2,8\].into()): max_dictionary_edit_distance for all terms lengths >=2, max_dictionary_edit_distance +1 for all terms for lengths>=8
     ///   ⚠️ The resulting maximum edit distance defined in lookup() for each term length (max_edit_distance + term_length_threshold) must be
     ///   <= the corresponding maximum edit distance defined for each term length in SymSpell::new() used for creation of dictionary structures.
     /// * `max_results` - Optional parameter to limit the number of suggestions returned.
@@ -1150,8 +1150,8 @@ impl SymSpell {
     /// existing spaces are allowed and considered for optimum segmentation.
     ///
     /// word_segmentation uses a novel approach *without* recursion.
-    /// https://seekstorm.com/blog/fast-word-segmentation-noisy-text/
-    /// While each string of length n can be segmentend in 2^n−1 possible compositions https://en.wikipedia.org/wiki/Composition_(combinatorics)
+    /// <https://seekstorm.com/blog/fast-word-segmentation-noisy-text/>
+    /// While each string of length n can be segmentend in 2^n−1 possible compositions <https://en.wikipedia.org/wiki/Composition_(combinatorics)>
     /// word_segmentation has a linear runtime O(n) to find the optimum composition
     ///
     /// # Arguments
