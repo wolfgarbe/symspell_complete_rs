@@ -1,0 +1,52 @@
+[package]
+name = "symspell_complete_rs"
+version = "0.0.1"
+authors = ["Wolf Garbe <Wolf Garbe wolf.garbe@seekstorm.com>"]
+license = "MIT"
+categories = ["database-implementations", "data-structures"]
+description = "typo-tolerant autocomplete in Rust"
+documentation = "https://docs.rs/symspell_complete_rs/"
+homepage = "https://github.com/wolfgarbe/symspell_complete_rs"
+repository = "https://github.com/wolfgarbe/symspell_complete_rs"
+readme = "README.md"
+keywords = ["spellcheck","autocomplete", "symspell", "typo-tolerant"]
+exclude = ["data/*", ".*"]
+rust-version = '1.91'
+edition = "2024"
+
+[lib]
+name = "symspell_complete_rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = { version = "1.0.228", features = ["derive"], optional = true }
+ahash ={ version = "0.8.12", features = ["serde"]}
+regex = "1.12.2"
+strsim = "0.11.1"
+smallvec = "1.15.1"
+unicode-normalization = "0.1.25"
+itertools = "0.14.0"
+compact_str = "0.9.0"
+
+[target.'cfg(any(target_feature = "aes", target_feature = "sse2"))'.dependencies]
+gxhash = { version = "3.5.0", features = ["deterministic"]}
+
+[lints.rust]
+missing_docs = "warn"
+unused_import_braces = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_qualifications = "warn"
+
+[profile.release]
+lto = true
+opt-level = 3
+debug = false
+debug-assertions = false
+panic = "abort"
+overflow-checks = false
+strip = "debuginfo"
+
+[package.metadata.docs.rs]
+rustc-args = ["-C", "target-cpu=native"]
+rustdoc-args = ["-C", "target-cpu=native"]
