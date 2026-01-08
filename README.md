@@ -7,7 +7,7 @@ SymSpellComplete<br>
 
 **SymSpellComplete**, a typo-tolerant autocomplete library in Rust.
 
-> ⚠️ Work-in-progress. Currently only intended to be used by the [SeekStorm lexical search library](https://github.com/SeekStorm/SeekStorm) v1.2.0, but not by third-party software: the library interface is not yet stable, and not all advertised features are implemented yet.
+> ⚠️ Work-in-progress. Currently only intended to be used by the [SeekStorm lexical search library](https://github.com/SeekStorm/SeekStorm) v1.2.0, but not for third-party use: the library interface is not yet stable, and not all advertised features are implemented yet.
  
 
 
