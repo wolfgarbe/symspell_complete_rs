@@ -36,7 +36,7 @@ If you like SymSpellComplete, try [**SeekStorm**](https://github.com/SeekStorm/S
 <br>
 
 ```text
-Copyright (c) 2025 Wolf Garbe
+Copyright (c) 2026 Wolf Garbe
 Version: 0.0.1
 Author: Wolf Garbe <wolf.garbe@seekstorm.com>
 Maintainer: Wolf Garbe <wolf.garbe@seekstorm.com>
