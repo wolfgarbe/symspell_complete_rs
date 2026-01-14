@@ -1,6 +1,6 @@
 [package]
 name = "symspell_complete_rs"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Wolf Garbe <Wolf Garbe wolf.garbe@seekstorm.com>"]
 license = "MIT"
 categories = ["database-implementations", "data-structures"]

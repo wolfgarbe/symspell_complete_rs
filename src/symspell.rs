@@ -1,4 +1,3 @@
-
 use ahash::{AHashMap, AHashSet};
 use itertools::Itertools;
 use std::cmp;
@@ -289,7 +288,9 @@ pub struct SymSpell {
     term_length_threshold: Option<Vec<usize>>,
     /// The length of word prefixes, from which deletes are generated. (5..7).
     prefix_length: usize,
-    /// The minimum frequency count for dictionary words to be considered a valid for spelling correction.
+    /// The minimum frequency count for dictionary words to be considered eligible for spelling correction.
+    /// If count_threshold is too high, some correct words might be missed from the dictionary and deemed misspelled,
+    /// if count_threshold is too low, some misspelled words from the corpus might be considered correct and added to the dictionary.
     count_threshold: usize,
     /// Number of all words in the corpus used to generate the frequency dictionary
     /// this is used to calculate the word occurrence probability p from word counts c : p=c/N
@@ -304,10 +305,13 @@ pub struct SymSpell {
     deletes: AHashMap<u32, Vec<Box<str>>>,
     // Dictionary of unique correct spelling words, and the frequency count for each word.
     words: AHashMap<Box<str>, usize>,
-    /// Bigrams optionally used for improved correction quality in lookup_coompound
+    /// Bigrams optionally used for improved correction quality in lookup_compound
     bigrams: AHashMap<Box<str>, usize>,
     /// Minimum bigram count in the bigram dictionary
     bigram_min_count: usize,
+    /// Number of words in the dictionary with a frequency count >= count_threshold, eligible for spelling correction.
+    /// In contrast, in the `words` candidate list we keep also those with a frequency count < count_threshold, to become eligible in the future during incremental dictionary updates.
+    word_count_above_threshold: usize,
 }
 
 // inexpensive and language independent: only deletes, no transposes + replaces + inserts
@@ -368,11 +372,19 @@ impl SymSpell {
             words: AHashMap::new(),
             bigrams: AHashMap::new(),
             bigram_min_count: usize::MAX,
+            word_count_above_threshold: 0,
         }
     }
 
-    /// Get the number of entries in the dictionary.
+    /// Get the number of words in the dictionary with a frequency count >= count_threshold, eligible for spelling correction.
+    /// In contrast, get_candidates_size also includes terms with a frequency count < count_threshold, to become eligible in the future during incremental dictionary updates.
     pub fn get_dictionary_size(&self) -> usize {
+        self.word_count_above_threshold
+    }
+
+    /// Get the number of candidates in the dictionary.
+    /// In contrast, get_dictionary_size only includes terms with a frequency count >= count_threshold, eligible for spelling correction.
+    pub fn get_candidates_size(&self) -> usize {
         self.words.len()
     }
 
@@ -549,6 +561,18 @@ impl SymSpell {
         max_results: Option<usize>,
         preserve_case: bool,
     ) -> Vec<Suggestion> {
+        let mut suggestions: Vec<Suggestion> = Vec::new();
+
+        //Numbers are ignored. They are not added to the dictionary, and the are always deemed correct.
+        if input.chars().next().unwrap().is_ascii_digit()
+            && input.chars().last().unwrap().is_ascii_digit()
+        {
+            //if term.as_ref().chars().all(|c| c.is_ascii_digit()) {
+            let suggestion_count = 1;
+            suggestions.push(Suggestion::new(input, 0, suggestion_count));
+            return suggestions;
+        }
+
         //todo: validate term_length_threshold
         if max_edit_distance + term_length_threshold.as_ref().map_or(0, |x| x.len())
             > self.max_dictionary_edit_distance
@@ -577,8 +601,6 @@ impl SymSpell {
                     max_term_edit_distance
                 });
 
-        let mut suggestions: Vec<Suggestion> = Vec::new();
-
         let input_lower_case = input.to_lowercase();
         let input_original_case = if preserve_case {
             input
@@ -595,9 +617,6 @@ impl SymSpell {
             return suggestions;
         }
 
-        let mut hashset1: AHashSet<String> = AHashSet::new();
-        let mut hashset2: AHashSet<String> = AHashSet::new();
-
         if self.words.contains_key(input) {
             let suggestion_count = self.words[input];
             suggestions.push(Suggestion::new(input_original_case, 0, suggestion_count));
@@ -606,6 +625,9 @@ impl SymSpell {
                 return suggestions;
             }
         }
+
+        let mut hashset1: AHashSet<String> = AHashSet::new();
+        let mut hashset2: AHashSet<String> = AHashSet::new();
 
         //early termination, if we only want to check if word in dictionary or get its frequency e.g. for word segmentation
         if max_term_edit_distance == 0 {
@@ -847,7 +869,10 @@ impl SymSpell {
         preserve_case: bool,
     ) -> Vec<Suggestion> {
         self.lookup_compound_vec(
-            &input.split_whitespace().map(|s| s.to_string()).collect::<Vec<String>>(),
+            &input
+                .split_whitespace()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>(),
             edit_distance_max,
             term_length_threshold,
             preserve_case,
@@ -886,11 +911,13 @@ impl SymSpell {
         term_length_threshold: &Option<Vec<usize>>,
         preserve_case: bool,
     ) -> Vec<Suggestion> {
-
         //input preserved case for final suggestion (but preserving case for query correction is unnecessary)
-        let input=input_vec.join(" ");
+        let input = input_vec.join(" ");
         //final input_vec has to be lower case
-        let input_vec=input_vec.iter().map(|s| s.to_lowercase()).collect::<Vec<String>>();
+        let input_vec = input_vec
+            .iter()
+            .map(|s| s.to_lowercase())
+            .collect::<Vec<String>>();
 
         let mut suggestions: Vec<Suggestion>; //suggestions for a single term
         let mut suggestion_parts: Vec<Suggestion> = Vec::new(); //1 line with separate parts
@@ -1348,6 +1375,14 @@ impl SymSpell {
     where
         T: Clone + AsRef<str> + Into<String>,
     {
+        //Numbers are ignored. They are not added to the dictionary, and the are always deemed correct.
+        if term.as_ref().chars().next().unwrap().is_ascii_digit()
+            && term.as_ref().chars().last().unwrap().is_ascii_digit()
+        {
+            //if term.as_ref().chars().all(|c| c.is_ascii_digit()) {
+            return false;
+        }
+
         // update words
         let entry = self
             .words
@@ -1371,6 +1406,8 @@ impl SymSpell {
                 return false;
             }
         }
+
+        self.word_count_above_threshold += 1;
 
         // create deletes
         let term_len = len(term.as_ref());
