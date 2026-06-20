@@ -28,8 +28,11 @@ When integrated into the [**SeekStorm**](https://github.com/SeekStorm/SeekStorm)
 - Works for the long tail of queries that never reached a log.
 - possible drawback: content-driven vs. usage-driven suggestion ranking.
 - Ghosting: highlighting the suggested text within the search box in the UI.
+
+## Feature Flags
+
+- **`gxhash`**: high-performance hashing via `gxhash`, both for `x86_64` and `aarch64`. Otherwise fallback to `ahash`.
  
----
 
 ## Blog Posts
 

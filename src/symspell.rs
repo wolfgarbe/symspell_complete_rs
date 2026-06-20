@@ -10,13 +10,13 @@ use unicode_normalization::UnicodeNormalization;
 // If compiling for x86_64 AND the user explicitly targeted AES/SSE2/NEON and the feature is explicitly requested, use gxhash
 #[cfg(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"
@@ -27,13 +27,13 @@ use gxhash::{gxhash32, gxhash64};
 // FALLBACK: On any other platform, or if the compiler lacks native hardware instructions
 #[cfg(not(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"
@@ -43,13 +43,13 @@ use ahash::RandomState;
 
 #[cfg(not(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"
@@ -59,13 +59,13 @@ use std::sync::LazyLock;
 
 #[cfg(not(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"
@@ -79,13 +79,13 @@ pub static HASHER_32: LazyLock<RandomState> =
 #[inline]
 #[cfg(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"
@@ -100,13 +100,13 @@ pub(crate) fn hash32(term_bytes: &[u8]) -> u32 {
 #[inline]
 #[cfg(not(any(
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "x86_64",
         target_feature = "aes",
         target_feature = "sse2"
     ),
     all(
-        feature = "gx",
+        feature = "gxhash",
         target_arch = "aarch64",
         target_feature = "aes",
         target_feature = "neon"

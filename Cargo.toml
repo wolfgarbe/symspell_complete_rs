@@ -1,6 +1,6 @@
 [package]
 name = "symspell_complete_rs"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Wolf Garbe <Wolf Garbe wolf.garbe@seekstorm.com>"]
 license = "MIT"
 categories = ["database-implementations", "data-structures"]
@@ -15,7 +15,7 @@ rust-version = '1.91'
 edition = "2024"
 
 [features]
-gx = ["dep:gxhash"] # Activate gxhash when you hardware supports AES/SSE2 and you want faster hash computation.
+gxhash = ["dep:gxhash"] # Activate gxhash when you hardware supports AES and SSE2/NEON and you want faster hash computation.
 
 [lib]
 name = "symspell_complete_rs"
@@ -27,9 +27,9 @@ ahash ={ version = "0.8.12", features = ["serde"]}
 gxhash = { version = "3.5.0", features = ["deterministic"], optional = true }
 regex = "1.12.3"
 strsim = "0.11.1"
-smallvec = "1.15.1"
+smallvec = "1.15.2"
 unicode-normalization = "0.1.25"
-itertools = "0.14.0"
+itertools = "0.15.0"
 compact_str = "0.9.1"
 
 [workspace.lints.rust]
